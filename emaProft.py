@@ -65,10 +65,10 @@ EMAProfitTime = []
 cryptoPriceData = yf.download(ticker+"-USD",  start=startDate, end=endDate);
 
 #Print Usage
-print(f"\n{bcolors.WARNING} Usage: emaProft.py (Start Balence) (Small EMA) (Large EMA) (Start Date YYYY-MM-DD) (End Date YYYY-MM-DD) (Crypto EG. ETH){bcolors.ENDC}")
+print(f"\n{bcolors.WARNING} Usage: emaProft.py (Start Balance) (Small EMA) (Large EMA) (Start Date YYYY-MM-DD) (End Date YYYY-MM-DD) (Crypto EG. ETH){bcolors.ENDC}")
 
 #Print Start Info
-print(f"\n{bcolors.WARNING} Start Balence: {startAmmount} Small EMA: {smallEMA} Large EMA: {largerEMA} Start Date: {startDate} End Date: {endDate} {bcolors.ENDC}")
+print(f"\n{bcolors.WARNING} Start Balance: {startAmmount} Small EMA: {smallEMA} Large EMA: {largerEMA} Start Date: {startDate} End Date: {endDate} {bcolors.ENDC}")
 
 #Calc 2 EMAs
 cryptoPriceData['smallerEMA'] = cryptoPriceData['Close'].ewm(span=smallEMA, adjust=False).mean()
@@ -126,7 +126,7 @@ print(f"{bcolors.OKGREEN} Buy {startAmmount} USD of {ticker} @ {round(openPrice,
 print(f"{bcolors.FAIL} Sell {round(MarketBal)} {ticker} @ {round(closePrice, 2)} for {round(MarketProfit)} USD {bcolors.ENDC}")
 
 #Print P/L
-print(f"\n{bcolors.OKBLUE} USD balence: {round(usdBal, 2)}, Profit {round(usdBal - startAmmount, 2)}, Market Profit: {round( MarketProfit - startAmmount ,2)} {bcolors.ENDC}")
+print(f"\n{bcolors.OKBLUE} USD Balance: {round(usdBal, 2)}, Profit {round(usdBal - startAmmount, 2)}, Market Profit: {round( MarketProfit - startAmmount ,2)} {bcolors.ENDC}")
 
 #Calc percent diff
 percentDiff = (abs((MarketProfit- startAmmount) - (usdBal - startAmmount)) / (((MarketProfit- startAmmount) + (usdBal - startAmmount)) / 2)) * 100
@@ -139,8 +139,8 @@ else:
 
 print(f"{bcolors.OKBLUE}{bcolors.BOLD} \n Show Profit Grah? (y/n) {bcolors.ENDC}")
 if input() == "y":
-    plt.plot(EMAProfitTime, label='EMA Profit')
     plt.plot(MarketProfitTime, label='Market Profit')
+    plt.plot(EMAProfitTime, label='EMA Profit')
 
     plt.legend(loc=2)
 
