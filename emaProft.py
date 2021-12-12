@@ -1,8 +1,10 @@
 #Import required libs
+import datetime
 import yfinance as yf
 import pandas as pd
 import matplotlib.pyplot as plt
 import sys
+from dateutil.relativedelta import relativedelta
 
 
 #Setup colors for printing
@@ -44,12 +46,15 @@ else:
 if len(sys.argv) >= 5:
     startDate = sys.argv[4]
 else:
-    startDate = "2020-12-12"
+    ytd = datetime.datetime.now() - relativedelta(years=1)
+    startDate = ytd.strftime("%Y-%m-%d")
+    
 
 if len(sys.argv ) >= 6:
     endDate = sys.argv[5]
 else:
-    endDate = "2021-12-12"
+    today = datetime.date.today()
+    endDate = today.strftime("%Y-%m-%d")
 
 if len(sys.argv ) >= 7:
     ticker = sys.argv[6] 
