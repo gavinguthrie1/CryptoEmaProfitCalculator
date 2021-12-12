@@ -56,6 +56,11 @@ if len(sys.argv ) >= 7:
 else:
     ticker = "ETH"
 
+
+#Vars to store profit for graph
+MarketProfitTime = []
+EMAProfitTime = []
+
 #Download Price Data
 cryptoPriceData = yf.download(ticker+"-USD",  start=startDate, end=endDate);
 
@@ -68,6 +73,15 @@ print(f"\n{bcolors.WARNING} Start Balence: {startAmmount} Small EMA: {smallEMA} 
 #Calc 2 EMAs
 cryptoPriceData['smallerEMA'] = cryptoPriceData['Close'].ewm(span=smallEMA, adjust=False).mean()
 cryptoPriceData['largerEMA'] = cryptoPriceData['Close'].ewm(span=largerEMA, adjust=False).mean()
+
+
+#Calc what would have been made in profit if put in market
+MarketBal = startAmmount / cryptoPriceData.iloc[0]['Close']
+MarketProfit = MarketBal * cryptoPriceData.iloc[-1]['Close']
+
+#Get first and last price for printing market profit
+openPrice = cryptoPriceData.iloc[0]['Close']
+closePrice = cryptoPriceData.iloc[-1]['Close']
 
 #Init bals
 usdBal = startAmmount
@@ -84,6 +98,8 @@ for index, row in cryptoPriceData.iterrows():
         currentPrice = round(row["Close"],2)
         print(f"{bcolors.FAIL} Sell {round(cryptoBal, 2)} {ticker} @ {currentPrice} for {round(currentPrice * cryptoBal, 2)} USD, Profit: {round((currentPrice * cryptoBal) - startAmmount)} {bcolors.ENDC}")
         usdBal = cryptoBal * row["Close"]
+        EMAProfitTime.append(usdBal - startAmmount)
+        MarketProfitTime.append((MarketBal * row["Close"]) - startAmmount)
         cryptoBal = 0
         LargeEMAhigher = True
     elif row['largerEMA'] < row['smallerEMA'] and LargeEMAhigher == True:
@@ -96,21 +112,14 @@ for index, row in cryptoPriceData.iterrows():
 
 #If any crypto left, sell
 if LargeEMAhigher == False:
-        usdBal = cryptoBal * cryptoPriceData["Close"].iget(-1)
+        usdBal = cryptoBal * cryptoPriceData.iloc[-1]['Close']
         cryptoBal = 0
         LargeEMAhigher = True
-        profit.append(usdBal - startAmmount)
+        EMAProfitTime.append(usdBal - startAmmount)
+        MarketProfitTime.append((MarketBal * row["Close"]) - startAmmount)
         print(f"{bcolors.FAIL} Selling Remaining Crypto! {bcolors.ENDC}")
 
 print(f"\n{bcolors.WARNING} #########################Market Data######################### {bcolors.ENDC}")
-
-#Calc what would have been made in profit
-MarketBal = startAmmount / cryptoPriceData.iloc[0]['Close']
-MarketProfit = MarketBal * cryptoPriceData.iloc[-1]['Close']
-
-#Get first and last price for printing
-openPrice = cryptoPriceData.iloc[0]['Close']
-closePrice = cryptoPriceData.iloc[-1]['Close']
 
 #Print Market Data
 print(f"{bcolors.OKGREEN} Buy {startAmmount} USD of {ticker} @ {round(openPrice, 2)} for {round(MarketBal)} {ticker} {bcolors.ENDC}")
@@ -127,3 +136,15 @@ if MarketProfit > (usdBal - startAmmount):
     print(f"{bcolors.OKBLUE}{bcolors.BOLD} Market outperformed EMA strat by ${round(MarketProfit - (usdBal - startAmmount), 2)} ({round(percentDiff, 2)}%) {bcolors.ENDC}")
 else:
     print(f"{bcolors.OKBLUE}{bcolors.BOLD} EMA outperformed Market strat by ${round((usdBal - startAmmount) - MarketProfit, 2) } ({round(percentDiff, 2)}%) {bcolors.ENDC}")
+
+print(f"{bcolors.OKBLUE}{bcolors.BOLD} \n Show Profit Grah? (y/n) {bcolors.ENDC}")
+if input() == "y":
+    plt.plot(EMAProfitTime, label='EMA Profit')
+    plt.plot(MarketProfitTime, label='Market Profit')
+
+    plt.legend(loc=2)
+
+    plt.xlabel("Number Of Trades")
+    plt.ylabel("Profit in USD")
+
+    plt.show()
