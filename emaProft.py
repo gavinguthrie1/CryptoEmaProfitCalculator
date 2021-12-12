@@ -60,7 +60,7 @@ else:
 cryptoPriceData = yf.download(ticker+"-USD",  start=startDate, end=endDate);
 
 #Print Usage
-print(f"\n{bcolors.WARNING} Usage: emaProft.py (Start Balence) (Small EMA) (Large EMA) (Start Date YYYY-MM-DD) (End Date YYYY-MM-DD) (Crypto EG. {ticker}){bcolors.ENDC}")
+print(f"\n{bcolors.WARNING} Usage: emaProft.py (Start Balence) (Small EMA) (Large EMA) (Start Date YYYY-MM-DD) (End Date YYYY-MM-DD) (Crypto EG. ETH){bcolors.ENDC}")
 
 #Print Start Info
 print(f"\n{bcolors.WARNING} Start Balence: {startAmmount} Small EMA: {smallEMA} Large EMA: {largerEMA} Start Date: {startDate} End Date: {endDate} {bcolors.ENDC}")
